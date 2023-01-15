@@ -23,6 +23,13 @@ To run binary
 ```
 git clone https://github.com/gopher-ninja/blog-server
 make
+# Please update following variable as per you postgres server details
+export DB_HOST=192.168.29.85
+export DB_PORT=54320
+export DB_NAME=postgres
+export DB_USER="user"
+export DB_PASSWORD="admin"
+export GIN_MODE=release
 ./blog-server
 ```
 
