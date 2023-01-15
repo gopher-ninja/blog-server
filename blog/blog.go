@@ -51,7 +51,7 @@ func dbinit() *ent.Client {
 func CreateAdminUser(ctx context.Context) (*ent.User, error) {
 	client := dbinit()
 	defer client.Close()
-	adminName := os.Getenv("ADMIN_NAME")
+	adminName := os.Getenv("ADMIN_USERNAME")
 	if adminName == "" {
 		adminName = "admin"
 	}

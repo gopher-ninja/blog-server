@@ -14,6 +14,7 @@ The blog-server backend is developed using `gonic/gin` and `ent.io` ORM library.
 ## Installation steps
 
 #### Pre-requisites
+* Ubuntu 20.04(preferred)
 * Golang(1.19.5)
 * Docker
 * make
@@ -30,6 +31,8 @@ export DB_NAME=postgres
 export DB_USER="user"
 export DB_PASSWORD="admin"
 export GIN_MODE=release
+ecport ADMIN_USERNAME=admin
+export ADMIN_PASSWORD=Admin@123
 ./blog-server
 ```
 
@@ -38,7 +41,7 @@ To run as a docker container
 git clone https://github.com/gopher-ninja/blog-server
 make docker
 docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_USER='user' -e POSTGRES_PASSWORD='admin' postgres:latest
-docker run -d -p 0.0.0.0:8080:8080 -e DB_HOST=192.168.29.85 -e DB_PORT=54320 -e DB_NAME=postgres -e DB_USER="user" -e DB_PASSWORD="admin" -e GIN_MODE=release gopher-ninja/blog-server```
+docker run -d -p 0.0.0.0:8080:8080 -e ADMIN_USERNAME=admin -e ADMIN_PASSWORD=Admin@123 -e DB_HOST=192.168.29.85 -e DB_PORT=54320 -e DB_NAME=postgres -e DB_USER="user" -e DB_PASSWORD="admin" -e GIN_MODE=release gopher-ninja/blog-server```
 ```
 To run without cloning
 ```json
