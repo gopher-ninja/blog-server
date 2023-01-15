@@ -30,13 +30,12 @@ func NewBlogService() BlogService {
 }
 
 func dbinit() *ent.Client {
-	//dbHost:= os.Getenv("DB_HOST")
-	//dbPort:= os.Getenv("DB_PORT")
-	//dbName:= os.Getenv("DB_NAME")
-	//dbPassword:= os.Getenv("DB_PASSWORD")
-	//dbUserName:= os.Getenv("DB_USER")
-	//client, err := ent.Open("postgres","host="+dbHost+" port="+dbPort+" user="+dbUserName+" dbname="+dbName+" password="+dbPassword+" sslmode=disable")
-	client, err := ent.Open("postgres", "host=192.168.29.85 port=54320 user=user dbname=postgres password=admin sslmode=disable")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbUserName := os.Getenv("DB_USER")
+	client, err := ent.Open("postgres", "host="+dbHost+" port="+dbPort+" user="+dbUserName+" dbname="+dbName+" password="+dbPassword+" sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to bloggres: %v", err)
 	}
