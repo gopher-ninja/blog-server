@@ -30,6 +30,7 @@ func NewBlogService() BlogService {
 }
 
 func dbinit() *ent.Client {
+
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
@@ -105,7 +106,7 @@ func (bs *blogService) AddBlog(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": blogDetail})
+	c.JSON(http.StatusOK, gin.H{"blogDetail": blogDetail})
 }
 
 // Get all blogs
@@ -115,8 +116,10 @@ func (bs *blogService) GetBlogs(c *gin.Context) {
 	blogs, err := client.Blog.Query().All(context.Background())
 	if err != nil {
 		log.Printf("error getting user: %s", err.Error())
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": blogs})
+	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
 }
 
 // Get single blog using ID
@@ -126,7 +129,7 @@ func (bs *blogService) GetBlog(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		log.Print(err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Blog not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	blogDetail, err := client.Blog.Query().Where(blog.BlogId(id)).Only(context.Background())
@@ -135,7 +138,7 @@ func (bs *blogService) GetBlog(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Blog not found"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": blogDetail})
+	c.JSON(http.StatusOK, gin.H{"blogDetail": blogDetail})
 }
 
 // Update Blog
@@ -146,17 +149,17 @@ func (bs *blogService) UpdateBlog(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request parameter"})
 	}
-	var blogdetail ent.Blog
-	err = c.BindJSON(&blogdetail)
+	var blogDetail ent.Blog
+	err = c.BindJSON(&blogDetail)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 	}
-	err = client.Blog.Update().SetBlogTitle(blogdetail.BlogTitle).SetBlogContent(blogdetail.BlogContent).Where(blog.BlogId(id)).Exec(context.Background())
+	err = client.Blog.Update().SetBlogTitle(blogDetail.BlogTitle).SetBlogContent(blogDetail.BlogContent).Where(blog.BlogId(id)).Exec(context.Background())
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "failed while updating blog"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed while updating blog"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": blogdetail})
+	c.JSON(http.StatusOK, gin.H{"blogDetail": blogDetail})
 }
 
 // Delete Blog
@@ -166,7 +169,7 @@ func (bs *blogService) DeleteBlog(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		log.Print(err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Invalid BlogId"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid BlogId"})
 		return
 	}
 	_, err = client.Blog.Delete().Where(blog.BlogId(id)).Exec(context.Background())
@@ -175,5 +178,5 @@ func (bs *blogService) DeleteBlog(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Blog not found"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": "Blog deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"msg": "Blog deleted successfully"})
 }

@@ -8,8 +8,8 @@ import (
 )
 
 func InitRouters(User *ent.User) *gin.Engine {
-	env := os.Getenv("Environment")
-	if env == "prod" {
+	env := os.Getenv("GIN_MODE")
+	if env == "release" {
 		gin.SetMode(gin.ReleaseMode)
 	} else {
 		gin.SetMode(gin.DebugMode)
